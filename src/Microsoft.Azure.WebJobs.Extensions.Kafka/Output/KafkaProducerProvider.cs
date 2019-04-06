@@ -3,9 +3,12 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Linq;
+using System.Threading.Tasks;
 using Avro.Generic;
 using Avro.Specific;
 using Confluent.Kafka;
+using Confluent.Kafka.Admin;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Azure.WebJobs.Logging;
 using Microsoft.Extensions.Configuration;
@@ -21,14 +24,20 @@ namespace Microsoft.Azure.WebJobs.Extensions.Kafka
     {
         private readonly IConfiguration config;
         private readonly INameResolver nameResolver;
-        private readonly ILoggerProvider loggerProvider;
+        private readonly IKafkaTopicFactory kafkaTopicFactory;
+        private readonly ILogger logger;
         ConcurrentDictionary<string, IKafkaProducer> producers = new ConcurrentDictionary<string, IKafkaProducer>();
 
-        public KafkaProducerProvider(IConfiguration config, INameResolver nameResolver, ILoggerProvider loggerProvider)
+        public KafkaProducerProvider(
+            IConfiguration config,
+            INameResolver nameResolver,
+            IKafkaTopicFactory kafkaTopicFactory,
+            ILoggerProvider loggerProvider)
         {
             this.config = config;
             this.nameResolver = nameResolver;
-            this.loggerProvider = loggerProvider;
+            this.kafkaTopicFactory = kafkaTopicFactory ?? throw new ArgumentNullException(nameof(kafkaTopicFactory));
+            this.logger = loggerProvider.CreateLogger(LogCategories.CreateTriggerCategory("Kafka"));
         }
 
         public IKafkaProducer Get(KafkaAttribute attribute)
@@ -40,11 +49,39 @@ namespace Microsoft.Azure.WebJobs.Extensions.Kafka
                 resolvedBrokerList = brokerListFromConfig;
             }
 
+            if (string.IsNullOrWhiteSpace(resolvedBrokerList))
+            {
+                throw new InvalidOperationException("Broker not provided for KafkaAttribute");
+            }
+
+            if (attribute.CreateTopicIfNotExists)
+            {
+                this.CreateTopicIfNotExistsAsync(attribute, resolvedBrokerList)
+                    .GetAwaiter()
+                    .GetResult();
+            }
+
             var keyTypeName = attribute.KeyType == null ? string.Empty : attribute.KeyType.AssemblyQualifiedName;
             var valueTypeName = attribute.ValueType == null ? string.Empty : attribute.ValueType.AssemblyQualifiedName;
             var producerKey = $"{resolvedBrokerList}:keyTypeName:valueTypeName";
 
             return producers.GetOrAdd(producerKey, (k) => this.Create(attribute, resolvedBrokerList));
+        }
+
+        /// <summary>
+        /// Creates the topic if it does not exist
+        /// </summary>
+        /// <returns>True if the topic was created, otherwise False</returns>
+        private async Task<bool> CreateTopicIfNotExistsAsync(KafkaAttribute attribute, string brokerList)
+        {
+
+            var topic = this.nameResolver.ResolveWholeString(attribute.Topic);
+            if (string.IsNullOrWhiteSpace(topic))
+            {
+                throw new InvalidOperationException($"Cannot set {nameof(attribute.CreateTopicIfNotExists)} and not provide a topic name");
+            }
+
+            return await this.kafkaTopicFactory.CreateIfNotExistsAsync(brokerList, topic, attribute.TopicPartitionCount, attribute.TopicReplicationFactor);
         }
 
         private IKafkaProducer Create(KafkaAttribute attribute, string brokerList)
@@ -77,7 +114,8 @@ namespace Microsoft.Azure.WebJobs.Extensions.Kafka
                 typeof(KafkaProducer<,>).MakeGenericType(keyType, valueType),
                 this.GetProducerConfig(brokerList),
                 avroSchema,
-                this.loggerProvider.CreateLogger(LogCategories.CreateTriggerCategory("Kafka")));
+                this.logger
+                );
         }
 
         private ProducerConfig GetProducerConfig(string brokerList)

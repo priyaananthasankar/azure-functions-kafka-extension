@@ -17,9 +17,11 @@ namespace Microsoft.Azure.WebJobs.Extensions.Kafka
         /// <summary>
         /// Initialize a new instance of the <see cref="KafkaAttribute"/>
         /// </summary>
+        /// <param name="brokerList">Broker list</param>
         /// <param name="topic">Topic name</param>
-        public KafkaAttribute(string topic)
+        public KafkaAttribute(string brokerList, string topic)
         {
+            BrokerList = brokerList;
             Topic = topic;
         }
 
@@ -34,7 +36,7 @@ namespace Microsoft.Azure.WebJobs.Extensions.Kafka
         /// The topic name hub.
         /// </summary>
         [AutoResolve]
-        public string Topic { get; private set; }
+        public string Topic { get; set; }
 
         /// <summary>
         /// Gets or sets the Broker List.
@@ -75,6 +77,28 @@ namespace Microsoft.Azure.WebJobs.Extensions.Kafka
         /// </summary>
         public string AvroSchema { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the topic should be created if it does not exist
+        /// Default: false
+        /// </summary>
+        public bool CreateTopicIfNotExists { get; set; }
+
+        /// <summary>
+        /// Gets or sets the topic partition count, in case <see cref="CreateTopicIfNotExists"/> is true
+        /// Default: 1
+        /// </summary>
+        public int TopicPartitionCount { get; set; } = 1;
+
+        /// <summary>
+        /// Gets or sets the topic replication factor, in case <see cref="CreateTopicIfNotExists"/> is true
+        /// Default: 1
+        /// </summary>
+        public short TopicReplicationFactor { get; set; } = 1;
+
+
+        /// <summary>
+        /// Validates if the <see cref="ValueType"/> is valid
+        /// </summary>
         bool IsValidValueType(Type value)
         {
             return

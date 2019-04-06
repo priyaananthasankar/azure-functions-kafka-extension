@@ -2,13 +2,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28701.123
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleConsumer", "samples\dotnet\ConsoleConsumer\ConsoleConsumer.csproj", "{2AFC1B40-7E2E-40D3-A53B-AA9CDE71C93D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleConsumer", "samples\dotnet\ConsoleConsumer\ConsoleConsumer.csproj", "{2AFC1B40-7E2E-40D3-A53B-AA9CDE71C93D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleProducer", "samples\dotnet\ConsoleProducer\ConsoleProducer.csproj", "{D23410DA-6694-4FC1-A79D-94816B6C1547}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleProducer", "samples\dotnet\ConsoleProducer\ConsoleProducer.csproj", "{D23410DA-6694-4FC1-A79D-94816B6C1547}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KafkaFunctionSample", "samples\dotnet\KafkaFunctionSample\KafkaFunctionSample.csproj", "{3FA2E041-0B22-4A59-B4D5-3FBBE4C580D5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KafkaFunctionSample", "samples\dotnet\KafkaFunctionSample\KafkaFunctionSample.csproj", "{3FA2E041-0B22-4A59-B4D5-3FBBE4C580D5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Azure.WebJobs.Extensions.Kafka", "src\Microsoft.Azure.WebJobs.Extensions.Kafka\Microsoft.Azure.WebJobs.Extensions.Kafka.csproj", "{061CBF29-42F4-4A0D-B058-85BA850823AC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Azure.WebJobs.Extensions.Kafka", "src\Microsoft.Azure.WebJobs.Extensions.Kafka\Microsoft.Azure.WebJobs.Extensions.Kafka.csproj", "{061CBF29-42F4-4A0D-B058-85BA850823AC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{6E69B597-E193-4704-9691-FFB10A80DAF0}"
 EndProject
@@ -16,13 +16,23 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dotnet", "dotnet", "{7F1BF3
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{3BB99C76-1457-4106-BAC5-78A4BE558D27}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Azure.WebJobs.Extensions.Kafka.EndToEndTests", "test\Microsoft.Azure.WebJobs.Extensions.Kafka.EndToEndTests\Microsoft.Azure.WebJobs.Extensions.Kafka.EndToEndTests.csproj", "{FD79A4B0-3A7E-4BA8-9210-538910064FBE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Azure.WebJobs.Extensions.Kafka.EndToEndTests", "test\Microsoft.Azure.WebJobs.Extensions.Kafka.EndToEndTests\Microsoft.Azure.WebJobs.Extensions.Kafka.EndToEndTests.csproj", "{FD79A4B0-3A7E-4BA8-9210-538910064FBE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.WebJobs.Extensions.Tests.Common", "test\Microsoft.Azure.WebJobs.Extensions.Tests.Common\Microsoft.WebJobs.Extensions.Tests.Common.csproj", "{3479FCF3-7F96-4055-A149-7BB10DAD6834}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleHost", "samples\dotnet\SampleHost\SampleHost.csproj", "{90727327-BBCC-4D30-8BFC-D1E71093B489}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Azure.WebJobs.Extensions.Kafka.UnitTests", "test\Microsoft.Azure.WebJobs.Extensions.Kafka.UnitTests\Microsoft.Azure.WebJobs.Extensions.Kafka.UnitTests.csproj", "{EDADAFD3-445B-4CE0-834C-F2D19DFD26CB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KafkaFunctionSample.Docker.Common", "samples\docker\KafkaFunctionSample.Docker.Common\KafkaFunctionSample.Docker.Common.csproj", "{B199E271-C4AD-4170-A928-BA05E3073747}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker", "docker", "{B7E42AEF-41CD-43FB-89E2-0AE23A7AD5D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KafkaFunctionSample.Docker.CustomerReviewTrigger", "samples\docker\KafkaFunctionSample.Docker.CustomerReviewTrigger\KafkaFunctionSample.Docker.CustomerReviewTrigger.csproj", "{F2FDDE35-4885-4D49-A066-75775A49D2DB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KafkaFunctionSample.Docker.BadCustomerReviewTrigger", "samples\docker\KafkaFunctionSample.Docker.BadCustomerReviewTrigger\KafkaFunctionSample.Docker.BadCustomerReviewTrigger.csproj", "{B9CAB862-46C7-4FA6-9AAA-EEC2FDD98C58}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KafkaFunctionSample.Docker.CustomerReviewApi", "samples\docker\KafkaFunctionSample.Docker.CustomerReviewApi\KafkaFunctionSample.Docker.CustomerReviewApi.csproj", "{0999D757-31D9-492B-8653-FC615B6A4071}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -61,6 +71,22 @@ Global
 		{EDADAFD3-445B-4CE0-834C-F2D19DFD26CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EDADAFD3-445B-4CE0-834C-F2D19DFD26CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EDADAFD3-445B-4CE0-834C-F2D19DFD26CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B199E271-C4AD-4170-A928-BA05E3073747}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B199E271-C4AD-4170-A928-BA05E3073747}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B199E271-C4AD-4170-A928-BA05E3073747}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B199E271-C4AD-4170-A928-BA05E3073747}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2FDDE35-4885-4D49-A066-75775A49D2DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2FDDE35-4885-4D49-A066-75775A49D2DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2FDDE35-4885-4D49-A066-75775A49D2DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2FDDE35-4885-4D49-A066-75775A49D2DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9CAB862-46C7-4FA6-9AAA-EEC2FDD98C58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9CAB862-46C7-4FA6-9AAA-EEC2FDD98C58}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9CAB862-46C7-4FA6-9AAA-EEC2FDD98C58}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9CAB862-46C7-4FA6-9AAA-EEC2FDD98C58}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0999D757-31D9-492B-8653-FC615B6A4071}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0999D757-31D9-492B-8653-FC615B6A4071}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0999D757-31D9-492B-8653-FC615B6A4071}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0999D757-31D9-492B-8653-FC615B6A4071}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -74,6 +100,11 @@ Global
 		{3479FCF3-7F96-4055-A149-7BB10DAD6834} = {3BB99C76-1457-4106-BAC5-78A4BE558D27}
 		{90727327-BBCC-4D30-8BFC-D1E71093B489} = {7F1BF36A-84F8-4944-8B9F-1B350F3581E4}
 		{EDADAFD3-445B-4CE0-834C-F2D19DFD26CB} = {3BB99C76-1457-4106-BAC5-78A4BE558D27}
+		{B199E271-C4AD-4170-A928-BA05E3073747} = {B7E42AEF-41CD-43FB-89E2-0AE23A7AD5D3}
+		{B7E42AEF-41CD-43FB-89E2-0AE23A7AD5D3} = {6E69B597-E193-4704-9691-FFB10A80DAF0}
+		{F2FDDE35-4885-4D49-A066-75775A49D2DB} = {B7E42AEF-41CD-43FB-89E2-0AE23A7AD5D3}
+		{B9CAB862-46C7-4FA6-9AAA-EEC2FDD98C58} = {B7E42AEF-41CD-43FB-89E2-0AE23A7AD5D3}
+		{0999D757-31D9-492B-8653-FC615B6A4071} = {B7E42AEF-41CD-43FB-89E2-0AE23A7AD5D3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5F624115-1576-40AC-B51A-F565023FD5C1}

@@ -19,6 +19,7 @@ namespace Microsoft.Azure.WebJobs.Extensions.Kafka
         private readonly IConfiguration config;
         private readonly IConverterManager converterManager;
         private readonly INameResolver nameResolver;
+        private readonly IKafkaTopicFactory kafkaTopicFactory;
         private readonly IOptions<KafkaOptions> options;
         private readonly ILogger logger;
 
@@ -27,22 +28,24 @@ namespace Microsoft.Azure.WebJobs.Extensions.Kafka
             IOptions<KafkaOptions> options,
             IConverterManager converterManager,
             INameResolver nameResolver,
+            IKafkaTopicFactory kafkaTopicFactory,
             ILoggerFactory loggerFactory)
         {
             this.config = config;
             this.converterManager = converterManager;
             this.nameResolver = nameResolver;
+            this.kafkaTopicFactory = kafkaTopicFactory ?? throw new System.ArgumentNullException(nameof(kafkaTopicFactory));
             this.options = options;
             this.logger = loggerFactory.CreateLogger(LogCategories.CreateTriggerCategory("Kafka"));
         }
 
-        public Task<ITriggerBinding> TryCreateAsync(TriggerBindingProviderContext context)
+        public async Task<ITriggerBinding> TryCreateAsync(TriggerBindingProviderContext context)
         {
             var parameter = context.Parameter;
             var attribute = parameter.GetCustomAttribute<KafkaTriggerAttribute>(inherit: false);
             if (attribute == null)
             {
-                return Task.FromResult<ITriggerBinding>(null);
+                return null;
             }
 
             var resolvedBrokerList = this.nameResolver.ResolveWholeString(attribute.BrokerList);
@@ -65,6 +68,13 @@ namespace Microsoft.Azure.WebJobs.Extensions.Kafka
                     resolvedEventHubConnectionString = ehConnectionStringFromConfig;
                 }
             }
+            else
+            {
+                if (attribute.CreateTopicIfNotExists)
+                {
+                    await this.kafkaTopicFactory.CreateIfNotExistsAsync(resolvedBrokerList, resolvedTopic, attribute.TopicPartitionCount, attribute.TopicReplicationFactor);
+                }
+            }
 
             // TODO: reuse connections if they match with others in same function app
             Task<IListener> listenerCreator(ListenerFactoryContext factoryContext, bool singleDispatch)
@@ -82,8 +92,7 @@ namespace Microsoft.Azure.WebJobs.Extensions.Kafka
                 return Task.FromResult(listener);
             }
 
-            var binding = BindingFactory.GetTriggerBinding(new KafkaTriggerBindingStrategy(), context.Parameter, this.converterManager, listenerCreator);
-            return Task.FromResult<ITriggerBinding>(binding);
+            return BindingFactory.GetTriggerBinding(new KafkaTriggerBindingStrategy(), context.Parameter, this.converterManager, listenerCreator);
         }
     }
 }

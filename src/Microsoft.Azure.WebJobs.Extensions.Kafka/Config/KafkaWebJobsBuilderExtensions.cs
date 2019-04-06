@@ -36,7 +36,24 @@ namespace Microsoft.Azure.WebJobs.Extensions.Kafka
                 configure(options);
             });
 
+            builder.Services.AddSingleton<IKafkaTopicFactory, KafkaTopicFactory>();
             builder.Services.AddSingleton<IKafkaProducerProvider, KafkaProducerProvider>();
+
+            var librdKafkaPath = Environment.GetEnvironmentVariable("PATH_TO_LIBRDKAFKA");
+            if (!string.IsNullOrWhiteSpace(librdKafkaPath))
+            {
+                try
+                {
+                    Console.WriteLine($"Will load librdkafka from {librdKafkaPath}");
+                    Confluent.Kafka.Library.Load(librdKafkaPath);
+                    Console.WriteLine($"librdkafka loaded from {librdKafkaPath}");
+                }
+                catch (Exception ex)
+                {
+                    Console.Error.WriteLine($"Failed to load librdkafka from {librdKafkaPath}");
+                    Console.Error.WriteLine(ex.ToString());
+                }
+            }
 
             return builder;
         }

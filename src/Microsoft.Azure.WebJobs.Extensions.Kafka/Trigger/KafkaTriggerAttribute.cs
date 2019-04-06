@@ -68,6 +68,24 @@ namespace Microsoft.Azure.WebJobs.Extensions.Kafka
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether the topic should be created if it does not exist
+        /// Default: false
+        /// </summary>
+        public bool CreateTopicIfNotExists { get; set; }
+
+        /// <summary>
+        /// Gets or sets the topic partition count, in case <see cref="CreateTopicIfNotExists"/> is true
+        /// Default: 1
+        /// </summary>
+        public int TopicPartitionCount { get; set; } = 1;
+
+        /// <summary>
+        /// Gets or sets the topic replication factor, in case <see cref="CreateTopicIfNotExists"/> is true
+        /// Default: 1
+        /// </summary>
+        public short TopicReplicationFactor { get; set; } = 1;
+
+        /// <summary>
         /// Gets or sets the Avro schema.
         /// Should be used only if a generic record should be generated
         /// </summary>

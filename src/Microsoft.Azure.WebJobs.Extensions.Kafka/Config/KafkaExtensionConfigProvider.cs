@@ -27,6 +27,7 @@ namespace Microsoft.Azure.WebJobs.Extensions.Kafka
         private readonly INameResolver nameResolver;
         private readonly IWebJobsExtensionConfiguration<KafkaExtensionConfigProvider> configuration;
         private readonly IKafkaProducerProvider kafkaProducerManager;
+        private readonly IKafkaTopicFactory kafkaTopicFactory;
         private readonly ILogger logger;
 
         public KafkaExtensionConfigProvider(
@@ -36,7 +37,8 @@ namespace Microsoft.Azure.WebJobs.Extensions.Kafka
             IConverterManager converterManager,
             INameResolver nameResolver,
             IWebJobsExtensionConfiguration<KafkaExtensionConfigProvider> configuration,
-            IKafkaProducerProvider kafkaProducerManager)
+            IKafkaProducerProvider kafkaProducerManager,
+            IKafkaTopicFactory kafkaTopicFactory)
         {
             this.config = config;
             this.options = options;
@@ -44,7 +46,8 @@ namespace Microsoft.Azure.WebJobs.Extensions.Kafka
             this.converterManager = converterManager;
             this.nameResolver = nameResolver;
             this.configuration = configuration;
-            this.kafkaProducerManager = kafkaProducerManager;
+            this.kafkaProducerManager = kafkaProducerManager ?? throw new ArgumentNullException(nameof(kafkaProducerManager));
+            this.kafkaTopicFactory = kafkaTopicFactory ?? throw new ArgumentNullException(nameof(kafkaTopicFactory));
             this.logger = loggerFactory.CreateLogger(LogCategories.CreateTriggerCategory("Kafka"));
         }
 
@@ -58,7 +61,14 @@ namespace Microsoft.Azure.WebJobs.Extensions.Kafka
                .AddConverter<KafkaEventData, byte[]>(ConvertKafkaEventData2Bytes);
 
             // register our trigger binding provider
-            var triggerBindingProvider = new KafkaTriggerAttributeBindingProvider(config, options, converterManager, nameResolver, loggerFactory);
+            var triggerBindingProvider = new KafkaTriggerAttributeBindingProvider(
+                config,
+                options,
+                converterManager,
+                nameResolver,
+                kafkaTopicFactory,
+                loggerFactory);
+
             context.AddBindingRule<KafkaTriggerAttribute>()
                 .BindToTrigger(triggerBindingProvider);
 

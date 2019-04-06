@@ -1,0 +1,97 @@
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: azfunc-kafka-reviewapi
+spec:
+  selector:
+    matchLabels:
+      app: reviewapi
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: reviewapi
+    spec:
+      containers:
+      - name: reviewapi
+        image: fbeltrao/kafkademo-customerreviewapi:0.0.3
+        ports:
+        - containerPort: 80
+        env:
+        - name: Brokers
+          value: mykafka-cp-kafka-headless:9092
+---
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: azfunc-kafka-reviewtrigger
+spec:
+  selector:
+    matchLabels:
+      app: reviewtrigger
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: reviewtrigger
+    spec:
+      containers:
+      - name: reviewapi
+        image: fbeltrao/kafkademo-reviewtrigger:0.0.3
+        env:
+        - name: Brokers
+          value: mykafka-cp-kafka-headless:9092
+---
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: azfunc-kafka-badreviewtrigger
+spec:
+  selector:
+    matchLabels:
+      app: badreviewtrigger
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: badreviewtrigger
+    spec:
+      containers:
+      - name: badreviewtrigger
+        image: fbeltrao/kafkademo-badreviewtrigger:0.0.3
+        env:
+        - name: Brokers
+          value: mykafka-cp-kafka-headless:9092
+        - name: CosmosDBConnection
+          value: "<COSMOS-DB-CONNECTION-STRING>"
+        - name: CosmosDbName
+          value: KafkaDemo
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: reviewapi
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: reviewapi
+  type: ClusterIP
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: reviewapi
+  annotations:
+    kubernetes.io/ingress.class: addon-http-application-routing
+spec:
+  rules:
+  - host: reviewapi.<CLUSTER_SPECIFIC_DNS_ZONE>
+    http:
+      paths:
+      - backend:
+          serviceName: reviewapi
+          servicePort: 80
+        path: /
